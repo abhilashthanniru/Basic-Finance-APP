@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin Dashboard - Personal Finance Manager</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        text-align: center;
+        margin: 20px;
+      }
+      .container {
+        width: 60%;
+        margin: auto;
+        padding: 20px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+      }
+      input,
+      select,
+      button {
+        margin: 5px;
+        padding: 8px;
+      }
+      table {
+        width: 100%;
+        margin-top: 20px;
+        border-collapse: collapse;
+      }
+      th,
+      td {
+        border: 1px solid #ddd;
+        padding: 8px;
+        text-align: center;
+      }
+      .delete-btn {
+        background: red;
+        color: white;
+        border: none;
+        padding: 5px;
+        cursor: pointer;
+      }
+      .logout-btn {
+        background: green;
+        color: white;
+        border: none;
+        padding: 10px;
+        cursor: pointer;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h2>Admin Dashboard - Personal Finance Manager</h2>
+      <button class="logout-btn" onclick="logout()">Logout</button>
+      <h3>Balance: <span id="balance">₹0.00</span></h3>
+      <input type="text" id="description" placeholder="Description" />
+      <input type="number" id="amount" placeholder="Amount" />
+      <select id="type">
+        <option value="income">Income</option>
+        <option value="expense">Expense</option>
+      </select>
+      <button
+        onclick="addTransaction()"
+        style="background: green; color: white"
+      >
+        Add Transaction
+      </button>
+      <h3>Transactions</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>Description</th>
+            <th>Amount</th>
+            <th>Type</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody id="transactions"></tbody>
+      </table>
+
+      <button onclick="exportToPDF()" style="background: blue; color: white">
+        Export to PDF
+      </button>
+    </div>
+
+    <script>
+      let transactions = [];
+      function addTransaction() {
+        let description = document.getElementById("description").value;
+        let amount = parseFloat(document.getElementById("amount").value);
+        let type = document.getElementById("type").value;
+
+        let transaction = { description, amount, type };
+        transactions.push(transaction);
+        updateUI();
+      }
+
+      function updateUI() {
+        let balance = 0;
+        let transactionTable = document.getElementById("transactions");
+        transactionTable.innerHTML = "";
+
+        transactions.forEach((t, index) => {
+          if (t.type === "income") {
+            balance += t.amount;  
+          } else {
+            balance -= t.amount;  
+          }
+          
+          transactionTable.innerHTML += `
+                    <tr>
+                        <td>${t.description}</td>
+                        <td>₹${t.amount.toFixed(2)}</td>
+                        <td>${t.type}</td>
+                        <td><button class="delete-btn" onclick="deleteTransaction(${index})">Delete</button></td>
+                    </tr>`;
+        });
+
+        document.getElementById("balance").textContent = `₹${balance.toFixed(2)}`;
+      }
+
+      function deleteTransaction(index) {
+        transactions.splice(index, 1);
+        updateUI();
+      }
+
+      function logout() {
+        alert("Logging out...");
+        window.location.href = "index.html";
+      }
+
+      function exportToPDF() {
+        alert("PDF export functionality to be implemented.");
+      }
+    </script>
+  </body>
+</html>
